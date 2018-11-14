@@ -1,0 +1,93 @@
+#Load PlotSizeAnalysis.RData file
+TreeData3$MeasmtObs<-droplevels(TreeData3$MeasmtObs) #Remove the dropped plots factor levels from the data frame information
+
+#Create a new listing of the measurement observations (a few have been dropped)
+PlotObs2<-as.list(levels(TreeData3$MeasmtObs))
+
+#---------------------------------------------------------------------------------------
+#CREATING 0.2-ACRE PLOTS FROM THE 0.25-ACRE PLOTS
+SzPt20<-NULL  #Object to hold 0.2-acre plot data as it comes out of sampler
+
+for (i in 1:336)
+{
+  currentPlot<-PlotObs2[[i]]
+  currentData<-subset(TreeData3,TreeData3$MeasmtObs==currentPlot)
+  sampleSize<-round(0.2/0.25*nrow(currentData))
+  
+  #Pick a random sample of trees from larger plot and place in smaller plot SzPt20.i
+  SzPt20.i<-currentData[sample(which(currentData$MeasmtObs==currentPlot),sampleSize),]
+  row.names(SzPt20.i)<-NULL #Drop row numbering
+  SzPt20<-rbind(SzPt20,SzPt20.i) #Append current sample to the other sampled plots
+}
+
+#Writing fifth acre plot information into .csv excel file
+write.table(SzPt20, file="Fifth Acre Plot Data.csv", sep=",", row.names = F)
+
+#--------------------------------------------------------------------------------------
+
+#CREATING 0.15-ACRE PLOTS FROM THE 0.25-ACRE PLOTS
+
+SzPt15<-NULL  #Object to hold 0.15-acre plot data as it comes out of sampler
+
+for (i in 1:336)
+{
+  currentPlot<-PlotObs2[[i]]
+  currentData<-subset(TreeData3,TreeData3$MeasmtObs==currentPlot)
+  sampleSize<-round(0.15/0.25*nrow(currentData))
+  
+  #Pick a random sample of trees from larger plot and place in smaller plot SzPt15.i
+  SzPt15.i<-currentData[sample(which(currentData$MeasmtObs==currentPlot),sampleSize),]
+  row.names(SzPt15.i)<-NULL #Drop row numbering
+  SzPt15<-rbind(SzPt15,SzPt15.i) #Append current sample to the other sampled plots
+}
+
+#Writing seventh acre plot information into .csv excel file
+write.table(SzPt15, file="Seventh Acre Plot Data.csv", sep=",", row.names = F)
+
+#--------------------------------------------------------------------------------------
+
+#CREATING 0.1-ACRE PLOTS FROM THE 0.25-ACRE PLOTS
+
+SzPt10<-NULL  #Object to hold 0.1-acre plot data as it comes out of sampler
+
+for (i in 1:336)
+{
+  currentPlot<-PlotObs2[[i]]
+  currentData<-subset(TreeData3,TreeData3$MeasmtObs==currentPlot)
+  sampleSize<-round(0.10/0.25*nrow(currentData))
+  
+  #Pick a random sample of trees from larger plot and place in smaller plot SzPt10.i
+  SzPt10.i<-currentData[sample(which(currentData$MeasmtObs==currentPlot),sampleSize),]
+  row.names(SzPt10.i)<-NULL #Drop row numbering
+  SzPt10<-rbind(SzPt10,SzPt10.i) #Append current sample to the other sampled plots
+}
+
+#Writing tenth acre plot information into .csv excel file
+write.table(SzPt10, file="Tenth Acre Plot Data.csv", sep=",", row.names = F)
+
+#--------------------------------------------------------------------------------------
+
+#CREATING 0.05-ACRE PLOTS FROM THE 0.25-ACRE PLOTS
+
+SzPt05<-NULL  #Object to hold 0.05-acre plot data as it comes out of sampler
+
+for (i in 1:336)
+{
+  currentPlot<-PlotObs2[[i]]
+  currentData<-subset(TreeData3,TreeData3$MeasmtObs==currentPlot)
+  sampleSize<-round(0.05/0.25*nrow(currentData))
+  
+  #Pick a random sample of trees from larger plot and place in smaller plot SzPt05.i
+  SzPt05.i<-currentData[sample(which(currentData$MeasmtObs==currentPlot),sampleSize),]
+  row.names(SzPt05.i)<-NULL #Drop row numbering
+  SzPt05<-rbind(SzPt05,SzPt05.i) #Append current sample to the other sampled plots
+}
+
+#Writing twentieth acre plot information into .csv excel file
+write.table(SzPt05, file="Twentieth Acre Plot Data.csv", sep=",", row.names = F)
+
+
+#======================================================================================================
+
+#Save the Objects to be used in the next phase of data analysis
+save(SzPt05,SzPt10,SzPt15,SzPt20,SzPt25,file="Plot Size Datasets.RData")
