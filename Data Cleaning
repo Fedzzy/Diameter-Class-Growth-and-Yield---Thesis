@@ -1,0 +1,59 @@
+#Read in the data
+TreeData<-read.csv("TreeDataOriginal.csv")
+TreeData$MeasmtObs<-as.factor(TreeData$MeasmtObs)
+
+#Creating metric units height and dbh data
+TreeData$dbhCm<-round((TreeData$dbh*2.54),1)
+TreeData$tothtM<-round((TreeData$totht*0.3048),2)
+
+#Create a listing of all measurement observations
+PlotObs<-as.list(levels(TreeData$MeasmtObs))
+
+#Connect to a .pdf file where the plots will be sent to
+pdf(file='DBH Distributions of the Study Plots.pdf',
+    width=8.5, height=11) 
+par(mfrow=c(5,4)) #Put 20 plots per page in 5 rows and 4 columns
+
+for (i in 1:342)
+{
+  plotObs.i<-PlotObs[[i]] #select ith plot observation from the list
+  temp.dat<-subset(TreeData,MeasmtObs==plotObs.i) #subset to obtain ith plot observation data
+  
+  #Histogram information to determine extent of y-axis for each measurement observation 
+  histTemp<-hist(temp.dat$dbhCm,
+                 breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                  37,39,41,43,45,47,49,51,53,55,57,59),
+                 plot=F)
+  maxY<-max(histTemp$counts) #Maximum value of Y (maximum frequency)
+  
+  #Histogram of the distributions
+  hist(temp.dat$dbhCm,
+       col = "gray",
+       freq = T,
+       breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                37,39,41,43,45,47,49,51,53,55,57,59),
+       xlim = c(0,60),
+       ylim = c(-1,maxY+5),
+       main=(list(paste("Measurement Observation # ",plotObs.i),cex=0.6)),
+       ylab=list("Frequency (Number of Trees in 2-cm Class)",cex=0.5),
+       xlab="dbh class (cm)")
+}
+
+dev.off()#Close the connection to the output .pdf file
+
+#Clean data of unusually large trees
+TreeData2<-subset(TreeData, TreeData$dbhCm<50)
+
+#Create a listing of measurements observations to be dropped due to not having a humped distribution
+BadDistObs<-as.list(c("163", "164", "165", "166", "167", "168"))
+
+#Removing non-humped distributions from TreeData2
+TreeData3<-subset(TreeData2, !(TreeData2$MeasmtObs%in%BadDistObs))
+TreeData3$MeasmtObs<-droplevels(TreeData3$MeasmtObs)
+
+#Analysis Data Sets
+SzPt25<-TreeData3
+
+#Writing SzPt25 Data into excel .csv file
+write.table(SzPt25, file="Fourth Acre Plot Data.csv", sep=",", row.names = F)
+
