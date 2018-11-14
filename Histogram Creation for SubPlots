@@ -1,0 +1,208 @@
+#Read in the data
+
+SzPt25<-read.csv("Fourth Acre Plot Data.csv")
+SzPt25$MeasmtObs<-as.factor(SzPt25$MeasmtObs)
+
+SzPt20<-read.csv("Fifth Acre Plot Data.csv")
+SzPt20$MeasmtObs<-as.factor(SzPt20$MeasmtObs)
+
+SzPt15<-read.csv("Seventh Acre Plot Data.csv")
+SzPt15$MeasmtObs<-as.factor(SzPt15$MeasmtObs)
+
+SzPt10<-read.csv("Tenth Acre Plot Data.csv")
+SzPt10$MeasmtObs<-as.factor(SzPt10$MeasmtObs)
+
+SzPt05<-read.csv("Twentieth Acre Plot Data.csv")
+SzPt05$MeasmtObs<-as.factor(SzPt05$MeasmtObs)
+
+#Create a listing of all measurement observations
+PlotObs<-as.list(levels(SzPt25$MeasmtObs))
+
+#====================================Creating Histogram PDF of Fifth Acre Plots========================
+
+#Connect to a .pdf file where the plots will be sent to
+pdf(file='DBH Distributions of Subsequent Plots.pdf',
+    width=8.5, height=11) 
+par(mfrow=c(5,4)) #Put 20 plots per page in 5 rows and 4 columns
+
+for (i in 1:336) #HOULD BE 1:336
+{
+  plotObs.i<-PlotObs[[i]] #select ith plot observation from the list
+  temp.dat<-subset(SzPt25,MeasmtObs==plotObs.i) #subset to obtain ith plot observation data in the 0.25-acre plot
+  temp.dat2<-subset(SzPt20,MeasmtObs==plotObs.i) #subset to obtain ith plot observation data in the 0.20-acre plot
+  temp.dat3<-subset(SzPt15,MeasmtObs==plotObs.i) #subset to obtain ith plot observation data in the 0.15-acre plot
+  temp.dat4<-subset(SzPt10,MeasmtObs==plotObs.i) #subset to obtain ith plot observation data in the 0.10-acre plot
+  temp.dat5<-subset(SzPt05,MeasmtObs==plotObs.i) #subset to obtain ith plot observation data in the 0.05-acre plot
+  
+  #Histogram information to determine extent of y-axis for each measurement observation 
+  histTemp<-hist(temp.dat$dbhCm,
+                 breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                  37,39,41,43,45,47,49,51,53,55,57,59),
+                 plot=F)
+  maxY<-max(histTemp$counts) #Maximum value of Y (maximum frequency)
+  
+  #Histogram of the distribution in ther 0.25-acre plot. The axes information will be common to the histograms of the smaller plot sizes
+  hist(temp.dat$dbhCm,
+       col = "gray",
+       freq = T,
+       breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                37,39,41,43,45,47,49,51,53,55,57,59),
+       xlim = c(0,60),
+       ylim = c(-1,maxY+5),
+       main=(list(paste("Measurement Observation # ",plotObs.i),cex=0.6)),
+       ylab=list("Frequency (Number of Trees in 2-cm Class)",cex=0.5),
+       xlab="dbh class (cm)"
+       )
+   
+  #Add the histogram for the distribution in the 0.2-acre plot    
+  hist(temp.dat2$dbhCm,
+       col = "red",
+       freq = T,
+       breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                37,39,41,43,45,47,49,51,53,55,57,59),
+       add=T
+       )
+  
+  #Add the histogram for the distribution in the 0.15-acre plot    
+  hist(temp.dat3$dbhCm,
+       col = "blue",
+       freq = T,
+       breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                37,39,41,43,45,47,49,51,53,55,57,59),
+       add=T
+  )
+  
+  #Add the histogram for the distribution in the 0.2-acre plot    
+  hist(temp.dat4$dbhCm,
+       col = "yellow",
+       freq = T,
+       breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                37,39,41,43,45,47,49,51,53,55,57,59),
+       add=T
+  )
+  
+  #Add the histogram for the distribution in the 0.2-acre plot    
+  hist(temp.dat5$dbhCm,
+       col = "green",
+       freq = T,
+       breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                37,39,41,43,45,47,49,51,53,55,57,59),
+       add=T
+  )
+}
+
+dev.off()#Close the connection to the output .pdf file
+
+
+
+
+
+#====================================Creating Histogram PDF of Seventh Acre Plots======================
+
+#Connect to a .pdf file where the plots will be sent to
+pdf(file='DBH Distributions of Seventh Acre Study Plots.pdf',
+    width=8.5, height=11) 
+par(mfrow=c(5,4)) #Put 20 plots per page in 5 rows and 4 columns
+
+for (i in 1:342)
+{
+  plotObs.i<-PlotObs[[i]] #select ith plot observation from the list
+  temp.dat<-subset(SzPt15,MeasmtObs==plotObs.i) #subset to obtain ith plot observation data
+  
+  #Histogram information to determine extent of y-axis for each measurement observation 
+  histTemp<-hist(temp.dat$dbhCm,
+                 breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                          37,39,41,43,45,47,49,51,53,55,57,59),
+                 plot=F)
+  maxY<-max(histTemp$counts) #Maximum value of Y (maximum frequency)
+  
+  #Histogram of the distributions
+  hist(temp.dat$dbhCm,
+       col = "gray",
+       freq = T,
+       breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                37,39,41,43,45,47,49,51,53,55,57,59),
+       xlim = c(0,60),
+       ylim = c(-1,maxY+5),
+       main=(list(paste("Measurement Observation # ",plotObs.i),cex=0.6)),
+       ylab=list("Frequency (Number of Trees in 2-cm Class)",cex=0.5),
+       xlab="dbh class (cm)")
+}
+
+dev.off()#Close the connection to the output .pdf file
+
+
+
+
+
+#====================================Creating Histogram PDF of Tenth Acre Plots========================
+
+#Connect to a .pdf file where the plots will be sent to
+pdf(file='DBH Distributions of Tenth Acre Study Plots.pdf',
+    width=8.5, height=11) 
+par(mfrow=c(5,4)) #Put 20 plots per page in 5 rows and 4 columns
+
+for (i in 1:342)
+{
+  plotObs.i<-PlotObs[[i]] #select ith plot observation from the list
+  temp.dat<-subset(SzPt10,MeasmtObs==plotObs.i) #subset to obtain ith plot observation data
+  
+  #Histogram information to determine extent of y-axis for each measurement observation 
+  histTemp<-hist(temp.dat$dbhCm,
+                 breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                          37,39,41,43,45,47,49,51,53,55,57,59),
+                 plot=F)
+  maxY<-max(histTemp$counts) #Maximum value of Y (maximum frequency)
+  
+  #Histogram of the distributions
+  hist(temp.dat$dbhCm,
+       col = "gray",
+       freq = T,
+       breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                37,39,41,43,45,47,49,51,53,55,57,59),
+       xlim = c(0,60),
+       ylim = c(-1,maxY+5),
+       main=(list(paste("Measurement Observation # ",plotObs.i),cex=0.6)),
+       ylab=list("Frequency (Number of Trees in 2-cm Class)",cex=0.5),
+       xlab="dbh class (cm)")
+}
+
+dev.off()#Close the connection to the output .pdf file
+
+
+
+
+
+#================================Creating Histogram PDF of Twentieth Acre Plots========================
+
+#Connect to a .pdf file where the plots will be sent to
+pdf(file='DBH Distributions of Twentieth Acre Study Plots.pdf',
+    width=8.5, height=11) 
+par(mfrow=c(5,4)) #Put 20 plots per page in 5 rows and 4 columns
+
+for (i in 1:342)
+{
+  plotObs.i<-PlotObs[[i]] #select ith plot observation from the list
+  temp.dat<-subset(SzPt05,MeasmtObs==plotObs.i) #subset to obtain ith plot observation data
+  
+  #Histogram information to determine extent of y-axis for each measurement observation 
+  histTemp<-hist(temp.dat$dbhCm,
+                 breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                          37,39,41,43,45,47,49,51,53,55,57,59),
+                 plot=F)
+  maxY<-max(histTemp$counts) #Maximum value of Y (maximum frequency)
+  
+  #Histogram of the distributions
+  hist(temp.dat$dbhCm,
+       col = "gray",
+       freq = T,
+       breaks=c(0,1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,
+                37,39,41,43,45,47,49,51,53,55,57,59),
+       xlim = c(0,60),
+       ylim = c(-1,maxY+5),
+       main=(list(paste("Measurement Observation # ",plotObs.i),cex=0.6)),
+       ylab=list("Frequency (Number of Trees in 2-cm Class)",cex=0.5),
+       xlab="dbh class (cm)")
+}
+
+dev.off()#Close the connection to the output .pdf file
