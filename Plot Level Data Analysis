@@ -1,0 +1,91 @@
+#Loading in functions to be used in data analysis
+source(file="Compiled Analysis Functions.R")
+
+#Loading in Packages
+library(plyr)
+
+#Loading in required datasets
+load("Plot Size Datasets.RData")
+GDat<-read.csv(file="MSU Coop Physiographic Regions 2.csv") #Physiographic plot collection data
+
+#=====================================Plot Level Analysis of Various Plot Sizes========================
+
+#Assigning Plot Sizes
+SzPt05$PlotSz<-.05
+SzPt10$PlotSz<-.10
+SzPt15$PlotSz<-.15
+SzPt20$PlotSz<-.20
+SzPt25$PlotSz<-.25
+
+#Binding Data into 1 Data Frame
+AllDat<-rbind(SzPt05,SzPt10,SzPt15,SzPt20, SzPt25)
+
+#Calculating Trees Per Hectare
+AllDat$TPHa<-(is.finite(AllDat$dbhCm)/AllDat$PlotSz)*2.470152
+
+#Calculations 
+SumDat<-ddply(AllDat, .(MeasmtObs, PlotSz), summarize,
+              
+                Age=min(age),
+               
+                AMDat=mean(dbhCm), 
+                
+                QMDat=QMD(dbhCm),
+                
+                VarDBH=var(dbhCm),
+                
+                dbhMIN=min(dbhCm),
+                
+                DomHtM=HDwithCC(tothtM, crClass),
+                
+                TPH=sum(TPHa),
+                
+                RS=sqrt(10000/TPH)/DomHtM,
+                
+                NumTrees=sum(is.finite(dbhCm)),
+                
+                D0=quantile(dbhCm, .00, na.rm=T), 
+                
+                D25=quantile(dbhCm, .25, na.rm=T),
+                
+                D50=quantile(dbhCm, .50, na.rm=T),
+                
+                D93=quantile(dbhCm, .93, na.rm=T),
+                
+                D95=quantile(dbhCm, .95, na.rm=T),
+               
+               #Moments Recovery
+                WM_A=WeiMomentA(dbhMIN),
+               
+                WM_B=WeiMomentB(dbhMIN, AMDat, QMDat),
+               
+                WM_C=WeiMomentC(dbhMIN, AMDat, QMDat),
+               
+               
+               #Percentiles Recovery
+                WP_A=WeiPctleA(NumTrees, D0, D50),
+                
+                WP_B=WeiPctleB(NumTrees, D0, D25, D50, D95, QMDat),
+                
+                WP_C=WeiPctleC(NumTrees, D0, D25, D50, D95),
+               
+               
+                #Moment-Percentile Hybrid Recovery
+                WH_A=WeiHyA(dbhMIN),
+               
+                WH_B=WeiHyB(dbhMIN, D93, QMDat),
+               
+                WH_C=WeiHyC(dbhMIN, D93, QMDat)
+                
+                )
+
+
+#Subsetting Data to create individual objects
+SzPt05ParamDat<-subset(SumDat2, PlotSz == .05)
+SzPt10ParamDat<-subset(SumDat2, PlotSz == .10)
+SzPt15ParamDat<-subset(SumDat2, PlotSz == .15)
+SzPt20ParamDat<-subset(SumDat2, PlotSz == .20)
+SzPt25ParamDat<-subset(SumDat2, PlotSz == .25)
+
+#Saving desired objects into individual R data file
+save(SzPt05ParamDat,SzPt10ParamDat,SzPt15ParamDat,SzPt20ParamDat,SzPt25ParamDat, file="Plot Level Parameter Data.RData")
